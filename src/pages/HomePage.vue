@@ -1,8 +1,8 @@
 <template>
     <div>
-        <h2>
+        <h1>
             Tests
-        </h2>
+        </h1>
 
         <url-input @onUpdate="getTests"></url-input>
 

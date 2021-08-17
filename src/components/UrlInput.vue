@@ -1,6 +1,5 @@
 <template>
-    <div class="container">
-        <div>
+    <div class="container pt-5">
             <form class="input-group" @submit.prevent="onFormSubmit">
                 <input class="form-control" 
                     :class="{'is-invalid': $v.url.$error}" 
@@ -16,7 +15,6 @@
                 <div class="invalid-feedback" v-if="!$v.url.url">Url field is invalid</div>
                 <div class="invalid-feedback" v-if="!$v.url.isSchemaValid">Url schema is invalid</div>
             </form>
-        </div>
     </div>
 </template>
 
@@ -41,6 +39,10 @@ export default {
     },
     methods: {
         onFormSubmit() {
+            if (this.url === '') {
+                return false
+            }
+            
             this.isLoading = true
             this.resource.save(null, {'Url': this.url})
                 .then(response => response.json())

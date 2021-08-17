@@ -4,6 +4,8 @@
             Tests
         </h2>
 
+        <url-input @onUpdate="getTests"></url-input>
+
         <hr>
 
         <b-table class="table" :items="tests" :fields="columns">
@@ -31,9 +33,14 @@
 </template>
 
 <script>
+import UrlInput from '../components/UrlInput.vue'
+
 export default {
+  components: { UrlInput },
     data() {
         return {
+            resource: null,
+            isLoading: false,
             tests: [],
             columns: [
                 {
@@ -50,7 +57,7 @@ export default {
                 },
                 {
                     key: 'processingTime',
-                    label: 'Processing Time (s)'
+                    label: 'Processing time (s)'
                 },
                 {
                     key: 'actions',
@@ -61,7 +68,7 @@ export default {
     },
     methods: {
         getTests() {
-            this.$http.get("https://localhost:44302/api/tests").then(response => response.json()).then(json => {
+            this.resource.get().then(response => response.json()).then(json => {
                 if (json.isSuccessful) {
                     this.tests = json.result.map(test => ({
                             'id': test.id,
@@ -74,11 +81,8 @@ export default {
         }
     },
     created() {
+        this.resource = this.$resource('tests')
         this.getTests()
     }
 }
 </script>
-
-<style>
-
-</style>

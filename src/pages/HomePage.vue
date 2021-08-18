@@ -9,6 +9,12 @@
         <hr>
 
         <b-table class="table" :items="tests" :fields="columns">
+            <template #head(actions)>
+                <div>
+                    <b-form-select @change="getTests" v-model="itemsPerPage" :options="options"></b-form-select>
+                </div>
+            </template>
+
             <template #cell(uri)="data">
                 <a :href="data.item.uri" target="_blank">{{ data.item.uri }}</a>
             </template>
@@ -31,6 +37,17 @@
                 </router-link>
             </template>
         </b-table>
+
+        <b-pagination 
+            class="mx-auto"
+            style="width: fit-content"
+            v-model="currentPage"
+            :total-rows="totalItems"
+            :per-page="itemsPerPage"  
+            pills
+            first-number
+            last-number          
+        ></b-pagination>
     </div>
 </template>
 
@@ -43,6 +60,15 @@ export default {
         return {
             resource: null,
             isLoading: false,
+            itemsPerPage: 10,
+            currentPage: 1,
+            totalItems: 0,
+            options: [
+                { value: 10, text: '10' },
+                { value: 20, text: '20' },
+                { value: 30, text: '30' },
+                { value: 40, text: '40' }
+            ],
             tests: [],
             columns: [
                 {
@@ -62,23 +88,25 @@ export default {
                     label: 'Processing time (s)'
                 },
                 {
-                    key: 'actions',
-                    label: 'Actions'
+                    key: 'actions'
                 }
             ]
         }
     },
     methods: {
         getTests() {
-            this.resource.get().then(response => response.json()).then(json => {
-                console.log(json)
+            this.resource.query({itemsPerPage: this.itemsPerPage, currentPage: this.currentPage}).then(response => response.json()).then(json => {
                 if (json.isSuccessful) {
-                    this.tests = json.result.map(test => ({
+                    this.tests = json.result.tests.map(test => ({
                             'id': test.id,
                             'uri': test.uri,
                             'startTime': new Date(test.startTime),
                             'endTime': new Date(test.endTime)
                     }))
+                    this.itemsPerPage = json.result.itemsPerPage
+                    this.currentPage = json.result.currentPage
+                    this.totalItems = json.result.total
+
                 } else {
                     this.$router.push({name: 'Error', query: {message: json.exceptionMessage}})
                 }
@@ -88,6 +116,11 @@ export default {
     created() {
         this.resource = this.$resource('tests')
         this.getTests()
+    },
+    watch: {
+        currentPage: function () {
+            this.getTests()
+        }
     }
 }
 </script>

@@ -5,9 +5,9 @@
     <br />
     <br />
     <br />
-    <h3>Details:</h3>
-    <p v-if="StatusCode">Status code: {{ StatusCode }}</p>
-    <p v-if="Message">Message: {{ Message }}</p>
+    <h3 v-if="statusCode != null || message != null">Details:</h3>
+    <p v-if="statusCode != null">Status code: {{ statusCode }}</p>
+    <p v-if="message != null">Message: {{ message }}</p>
     <br />
     <br />
     <router-link 
@@ -20,10 +20,10 @@
 
 <script>
 export default {
-    props: ['StatusCode', 'Message'],
     data() {
         return {
-
+          message: this.$router.currentRoute.query.message,
+          statusCode: this.$router.currentRoute.query.statusCode,
         }
     }
 }

@@ -26,6 +26,7 @@ export default {
     methods: {
         getTests() {
             this.resource.get({testId: this.id}).then(response => response.json()).then(json => {
+                console.log(json)
                 if (json.isSuccessful) {
                     this.links = json.result.map(test => this.mapJsonToLinkWithTime(test))
 
@@ -36,6 +37,8 @@ export default {
                     this.sitemap = json.result.filter(function (item) {
                         return !item.isFromCrawl && item.isFromSitemap
                     }).map(test => this.mapJsonToLink(test))
+                } else {
+                    this.$router.push({name: 'Error', query: {message: json.exceptionMessage}})
                 }
             })
         },

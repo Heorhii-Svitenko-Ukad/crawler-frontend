@@ -71,6 +71,7 @@ export default {
     methods: {
         getTests() {
             this.resource.get().then(response => response.json()).then(json => {
+                console.log(json)
                 if (json.isSuccessful) {
                     this.tests = json.result.map(test => ({
                             'id': test.id,
@@ -78,6 +79,8 @@ export default {
                             'startTime': new Date(test.startTime),
                             'endTime': new Date(test.endTime)
                     }))
+                } else {
+                    this.$router.push({name: 'Error', query: {message: json.exceptionMessage}})
                 }
             })
         }

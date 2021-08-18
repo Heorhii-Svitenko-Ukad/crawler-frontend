@@ -25,8 +25,10 @@
                 <span>{{ ((data.item.endTime - data.item.startTime) / 1000).toFixed(2) }}</span>
             </template>
 
-            <template #cell(actions)>
-                <a href="">Details</a>
+            <template #cell(actions)="data">
+                <router-link :to="{name: 'TestDetails', params: {testId: data.item.id}}">
+                    <a>Details</a>
+                </router-link>
             </template>
         </b-table>
     </div>

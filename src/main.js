@@ -9,7 +9,7 @@ Vue.use(VueResource)
 Vue.use(VueBootstrap)
 Vue.use(Vuelidate)
 
-Vue.http.options.root = 'https://localhost:44302/api'
+Vue.http.options.root = 'https://websitecrawlerwebapi.azurewebsites.net/api'
 
 new Vue({
   render: h => h(App),
